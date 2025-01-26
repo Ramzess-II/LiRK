@@ -1,0 +1,5 @@
+../Core/Src/uart.c:20:6:init_uart	8	static
+../Core/Src/uart.c:24:6:sendOk	8	static
+../Core/Src/uart.c:30:10:parsingData	8	static
+../Core/Src/uart.c:73:6:check_timeout	8	static
+../Core/Src/uart.c:90:6:HAL_UART_RxCpltCallback	16	static
