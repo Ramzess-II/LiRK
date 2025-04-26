@@ -1,5 +1,5 @@
-#ifndef INC_UART_H_
-#define INC_UART_H_
+#ifndef INC_SUPPORT_H_
+#define INC_SUPPORT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,22 +7,15 @@ extern "C" {
 
 //----------------------- подключим файлы ------------------------------------//
 #include "stm32h5xx_hal.h"
-#include "support.h"
-//----------------------- дефайним значения ----------------------------------//
-#define ENTRY         0
-#define WAIT_DATA     1
-#define DATA_RECIVE   2
-#define DATA_OK       3
-#define RECIVE_START  4
 
-#define BUF_SIZE      12300
-#define TIMEOUT_MS    2000 			   // Тайм-аут в миллисекундах 2000 за это время передадим 230 000 тыс бит
+//----------------------- дефайним значения ----------------------------------//
+#define true            1
+#define false           0
+
+#define VOLTAGE3_3      1
+#define VOLTAGE5        2
 
 //----------------------- объявим функции ------------------------------------//
-void init_uart(void);
-void sendOk (void);
-uint32_t parsingData (void);
-void check_timeout(void);
 
 //----------------------- объявим структуры ----------------------------------//
 
@@ -32,6 +25,4 @@ void check_timeout(void);
 }
 #endif
 
-
-
-#endif /* INC_UART_H_ */
+#endif /* INC_SUPPORT_H_ */

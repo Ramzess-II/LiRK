@@ -1,5 +1,6 @@
-../Core/Src/work.c:13:6:doWork	8	static
-../Core/Src/work.c:18:6:work	8	static
-../Core/Src/work.c:33:6:blinkLed	8	static
-../Core/Src/work.c:40:6:MyDMACpltCallback	16	static
-../Core/Src/work.c:47:6:startprogramm	16	static
+../Core/Src/work.c:14:6:doWork	8	static
+../Core/Src/work.c:21:6:work	8	static
+../Core/Src/work.c:37:6:blinkLed	8	static
+../Core/Src/work.c:44:6:MyDMACpltCallback	16	static
+../Core/Src/work.c:52:6:startprogramm	16	static
+../Core/Src/work.c:71:6:checkButton	8	static

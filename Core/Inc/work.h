@@ -8,9 +8,16 @@ extern "C" {
 //----------------------- подключим файлы ------------------------------------//
 #include "stm32h5xx_hal.h"
 #include "uart.h"
+#include "support.h"
 //----------------------- дефайним значения ----------------------------------//
 #define BLINK_TIME         1000
 
+#define led1_Pin GPIO_PIN_13
+#define led1_GPIO_Port GPIOC
+#define led2_Pin GPIO_PIN_14
+#define led2_GPIO_Port GPIOC
+#define keyStart_Pin GPIO_PIN_3
+#define keyStart_GPIO_Port GPIOA
 #define out0_Pin GPIO_PIN_0
 #define out0_GPIO_Port GPIOB
 #define out1_Pin GPIO_PIN_1
@@ -19,6 +26,10 @@ extern "C" {
 #define out2_GPIO_Port GPIOB
 #define led_Pin GPIO_PIN_8
 #define led_GPIO_Port GPIOA
+#define voltage5_Pin GPIO_PIN_10
+#define voltage5_GPIO_Port GPIOA
+#define voltage3_3_Pin GPIO_PIN_11
+#define voltage3_3_GPIO_Port GPIOA
 #define out3_Pin GPIO_PIN_3
 #define out3_GPIO_Port GPIOB
 #define out4_Pin GPIO_PIN_4
@@ -34,6 +45,7 @@ extern "C" {
 void doWork (void);
 void work (void);
 void blinkLed (void);
+void checkButton (void);
 void startprogramm (void);
 void MyDMACpltCallback(DMA_HandleTypeDef *hdma);
 //----------------------- объявим структуры ----------------------------------//

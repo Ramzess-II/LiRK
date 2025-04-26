@@ -10,9 +10,9 @@ uint32_t *ptrBufTime = bufTime;        // указатель на буфер
 uint32_t *ptrbufGpio = bufGpio;
 uint8_t txBufUart [10] = { 0 };
 uint8_t rxBufUart [10] = { 0 };
-uint8_t calbackOk, timeoutStart = 0;
+uint8_t calbackOk, timeoutStart, dataNotEmpty, outVoltage = 0;
 uint8_t uartProcess = WAIT_DATA;
-uint32_t start_time = 0;  			// Для отслеживания тайм-аута
+uint32_t start_time = 0;  			   // Для отслеживания тайм-аута
 uint32_t lenght = 0;
 
 //------------------------------ функции ---------------------------------------------//
@@ -29,10 +29,10 @@ void sendOk (void) {                                // ответить ок
 
 uint32_t parsingData (void) {                                                                     // парсинг данных
 	if (calbackOk) {                                                                              // если сработал колбек
-		calbackOk = 0;																			  // сбросим его
+		calbackOk = false;																	      // сбросим его
 		if (uartProcess == WAIT_DATA) {															  // если ожидание данных было
 			if (rxBufUart[0] == 0xAA ){                                                           // проверим нулевой байт
-				if (rxBufUart[1] == 0x55 || rxBufUart[1] == 0x33) {                               // проверим первый байт это данные или команда
+				if (rxBufUart[1] == 0x55 || rxBufUart[1] == 0x56 || rxBufUart[1] == 0x33) {       // проверим первый байт это данные или команда
 					timeoutStart = 0;                                                             // тут сбросим второй тайм аут, который нужен для приема первых 4 байт
 					lenght = rxBufUart [2] << 8;                                                  // соберем длительность
 					lenght |= rxBufUart [3];
@@ -44,13 +44,16 @@ uint32_t parsingData (void) {                                                   
 				}
 				switch (rxBufUart[1]) {                                                           // в зависимиости от данных во втором байте выполняем действия
 				case 0x55:
+				case 0x56:
 					HAL_UART_Receive_IT(&huart1, (uint8_t*) ptrBufTime, lenght - 4);              // в буфер времени принимаем нужное количество
 					uartProcess = DATA_RECIVE;                                                    // ставим статус приема данных
+					outVoltage = (rxBufUart[1] == 0x55) ? VOLTAGE3_3 : VOLTAGE5;                  // в зависимости от байта у нас либо 3,3в либо 5
 					return DATA_RECIVE;
 				break;
 				case 0x33:
 					HAL_UART_Receive_IT(&huart1, (uint8_t*) ptrbufGpio, lenght - 4);              // тоже самое но в другой буфер
 					uartProcess = DATA_RECIVE;
+					dataNotEmpty = true;                                                          // это фиксируем что данные загруженны в мк
 					return DATA_RECIVE;
 				break;
 				case 0x44:                                                                        // это команда старта
@@ -73,10 +76,10 @@ uint32_t parsingData (void) {                                                   
 void check_timeout(void) {                                                             // таймауты для юарта
 	if (!timeoutStart && huart1.RxXferCount < 4 ) {                                    // это если первые 4 байта по какой то причине долго идут
 		start_time = HAL_GetTick();                                                    // захват времени
-		timeoutStart = 1;                                                              // взводим флаг
+		timeoutStart = true;                                                           // взводим флаг
 	}
 	if (timeoutStart && (HAL_GetTick() - start_time >= 5)) {                           // 5 при скорости 115200 может передаться 500 бит
-		timeoutStart = 0;                                                              // сбросим флаг
+		timeoutStart = false;                                                          // сбросим флаг
     	HAL_UART_AbortReceive_IT(&huart1);                                             // сбросим прием
         HAL_UART_Receive_IT(&huart1, rxBufUart, 4);   			                       // Перезапуск приема заголовка
 	}
