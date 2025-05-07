@@ -62,8 +62,8 @@ void startprogramm (void) {
 	TIM2->ARR = *ptrBufTime;                                                                                  // напрямую разыменовываем первый элемент буффера
 	GPIOB->BSRR = *ptrbufGpio;                                                                                // и напрямую выставим состояния ног из буффера
 	HAL_TIM_Base_Start_DMA(&htim2, ptrBufTime + 1, ((lenght - 4) - 8));                                       // передавать количество байт а не слов! -8 по тому что 4 вначале не используем и на 4 меньше чем gpio
+    CLEAR_BIT(GPDMA1_Channel0->CCR, DMA_CCR_HTIE);                                                            // Явное отключение Half-Transfer Interrupt (конченый HAL)
 	HAL_DMA_Start_IT(&handle_GPDMA2_Channel0, (uint32_t)(ptrbufGpio + 1), bsrrAddress, ((lenght - 4) - 4));   // запуск дма на передачу по триггеру от таймера должно быть на 1 больше чем время но так как в 4 в начале то 4 отнимаем
-// костыль переделать
 	HAL_SuspendTick();                                                                                        // остановим систик
 	HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);                                         // упадем в сон чтоб не мешать дма
 }
